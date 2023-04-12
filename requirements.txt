@@ -260,3 +260,4 @@ yarl==1.8.2 ; python_version >= "3.8" and python_full_version != "3.9.7" and pyt
 yfinance==0.2.12 ; python_version >= "3.8" and python_full_version != "3.9.7" and python_version < "3.11"
 zipp==3.15.0 ; python_version >= "3.8" and python_full_version != "3.9.7" and python_version < "3.11"
 zope-interface==5.5.2 ; python_version >= "3.8" and python_full_version != "3.9.7" and python_version < "3.11"
+eth-ape==0.6.7 ; python_version >= "3.8" and python_full_version != "3.9.7" and python_version < "3.11"

@@ -84,34 +84,3 @@ export default function FilterColumns({
     </DropdownMenuPrimitive.Root>
   );
 }
-
-/*
-              <div className="p-2 border border-black shadow rounded grid grid-cols-4">
-              <div className="px-1 border-b border-black">
-              <label>
-              <input
-              type="checkbox"
-              checked={table.getIsAllColumnsVisible()}
-              onChange={table.getToggleAllColumnsVisibilityHandler()}
-              className="mr-1"
-              />
-              Toggle All
-              </label>
-              </div>
-                {table.getAllLeafColumns().map((column) => {
-                  return (
-                    <div key={column.id} className="px-1">
-                    <label>
-                    <input
-                    type="checkbox"
-                    checked={column.getIsVisible()}
-                    onChange={column.getToggleVisibilityHandler()}
-                    className="mr-1"
-                    />
-                    {column.id}
-                      </label>
-                    </div>
-                  );
-                })}
-              </div>
-              */

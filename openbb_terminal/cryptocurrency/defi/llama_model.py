@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 API_URL = "https://api.llama.fi"
 
+COINS_URL = "https://coins.llama.fi"
+
 LLAMA_FILTERS = [
     "tvl",
     "symbol",
@@ -181,6 +183,44 @@ def get_defi_tvl() -> pd.DataFrame:
     try:
         df = pd.DataFrame(response.json())
         df["date"] = df["date"].apply(lambda x: datetime.fromtimestamp(int(x)).date())
+        return df
+    except Exception as e:
+        logger.exception("Wrong response data: %s", str(e))
+        raise ValueError("Wrong response data") from e
+
+
+@log_start_end(log=logger)
+def get_token_price_history(tokenAddress,priceWidth) -> pd.DataFrame:
+    """Returns the historical values for the token price based on the given chain and timeperiod (only on the EVM supported chains by defillama) averaged over various fiat/ stablecoins with confidence.
+    Parameters
+    ----------
+    tokenAddress: string
+        consist of two parameters {chain:address} with the chain and the token address
+    priceWidth: string
+        optional parameter in hr (defaults to 6hr) of the time that is needed in order to fetch the result
+
+    Returns
+    -------
+    pd.DataFrame
+        Current price of tokens
+    """
+    columns_coins= [
+     "decimals",
+      "symbol",
+      "price",
+      "timestamp",
+      "confidence"
+    ]
+
+
+    response = request(API_URL + "/prices/current/" +tokenAddress+ "?searchWidth=" + priceWidth)
+    if response.status_code != 200:
+        raise Exception(f"Status code: {response.status_code}. Reason: {response.text}")
+    try:
+        df = pd.DataFrame(response.json())
+        df["timestamp"] = df["timestamp"].apply(lambda x: datetime.fromtimestamp(int(x)).date())
+        df = df.set_index("symbol")
+        df = df[columns_coins]
         return df
     except Exception as e:
         logger.exception("Wrong response data: %s", str(e))

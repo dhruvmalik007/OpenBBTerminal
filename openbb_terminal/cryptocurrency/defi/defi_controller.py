@@ -21,6 +21,8 @@ from openbb_terminal.cryptocurrency.defi import (
     terramoney_fcd_model,
     terramoney_fcd_view,
 )
+
+import pandas as pd
 from openbb_terminal.custom_prompt_toolkit import NestedCompleter
 from openbb_terminal.decorators import log_start_end
 from openbb_terminal.helper_funcs import (
@@ -980,3 +982,35 @@ class DefiController(BaseController):
                 if ns_parser.sheet_name
                 else None,
             )
+
+
+    '''
+    returning all of the listed ERC20 coins and their corresponding address referenced from the erc20_coins
+    '''
+    def fetch_coin_parameters() -> List[str]:
+        """Fetch all listed ERC20 coins"""
+        path = "../data/erc20_coins.json"
+        loaded = pd.read_json(path)
+        paths = df['base_currency'].apply(lambda x : (x['symbol'], x['address']))
+        return {symbol: address for symbol, address in paths}
+
+
+    def call_llama_coins(self,  other_args: List[str]):
+        "process defillama command for coins"
+        parser = argparse.ArgumentParser(
+        add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter, 
+        prog="llama latest values",
+        description="given upto date information  about the current ERC20 coins based on the defillama open sourced API",        
+        )
+        parser.add_argument(
+            "-c",
+            "--coins",
+            dest="coins",
+            type=str,
+            help="Coin prices to display",
+            default="ETH",
+            choices= self.fetch_coin_parameters(),
+        )
+
+
